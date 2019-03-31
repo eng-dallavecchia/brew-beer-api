@@ -1,0 +1,40 @@
+{
+  "name": "brew-beer-api",
+  "version": "1.0.0",
+  "description": "Contacts public API",
+  "main": "index.js",
+  "scripts": {
+    "babel-node": "babel-node --presets=@babel/preset-env",
+    "dev": "nodemon --ext js --exec npm run babel-node -- ./src/server.js",
+    "start": "node api/dist/server.js",
+    "build": "babel src -d dist"
+  },
+  "author": "Ricardo Orige, Gabriel Dalla Vechia",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "cpf": "^1.0.6",
+    "date-and-time": "^0.6.3",
+    "dotenv": "^6.0.0",
+    "email-validator": "^2.0.4",
+    "express": "^4.16.3",
+    "generate-password": "^1.4.0",
+    "knex": "^0.15.2",
+    "moment": "^2.22.2",
+    "morgan": "^1.9.0",
+    "mqtt": "^2.18.8",
+    "mysql2": "^1.5.3",
+    "nodemailer": "^4.6.7",
+    "striptags": "^3.1.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.51",
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/node": "^7.0.0-beta.51",
+    "@babel/polyfill": "^7.0.0-beta.54",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "babel-plugin-module-resolver": "^3.1.1",
+    "nodemon": "^1.17.5"
+  }
+}

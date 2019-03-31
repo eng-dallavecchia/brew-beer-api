@@ -1,0 +1,11 @@
+.DS_Store
+/node_modules
+npm-debug.log*
+package-lock.json
+/uploads/images/*
+/dist
+dist*
+dist.zip
+yarn-error.log
+.env
+
