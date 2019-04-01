@@ -16,7 +16,7 @@
     "body-parser": "^1.18.3",
     "cpf": "^1.0.6",
     "date-and-time": "^0.6.3",
-    "dotenv": "^6.0.0",
+    "dotenv": "^7.0.0",
     "email-validator": "^2.0.4",
     "express": "^4.16.3",
     "generate-password": "^1.4.0",
@@ -26,7 +26,8 @@
     "mqtt": "^2.18.8",
     "mysql2": "^1.5.3",
     "nodemailer": "^4.6.7",
-    "striptags": "^3.1.1"
+    "striptags": "^3.1.1",
+    "yarn": "^1.15.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.51",

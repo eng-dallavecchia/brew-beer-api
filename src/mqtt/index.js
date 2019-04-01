@@ -1,9 +1,10 @@
+import {} from "dotenv/config";
 import mqtt from "mqtt"; //https://www.npmjs.com/package/mqtt
 import { insert } from "./../db/dbUtil";
 
 export const mqttResponse = () => {
-  let Topic = "sgyydphu/readings/#"; //subscribe to all topics
-  let Broker_URL = "mqtt://m16.cloudmqtt.com";
+  let Topic = process.env.MQTT_TOPIC; //subscribe to all topics
+  let Broker_URL = process.env.MQTT_BROKER;
 
   let delimiter = " : ";
 
@@ -13,10 +14,10 @@ export const mqttResponse = () => {
   }
 
   let options = {
-    clientId: "MQQT",
-    port: 14336,
-    username: "sgyydphu",
-    password: "w1CbV3xm3V2x",
+    clientId: process.env.CLIENTID,
+    port: process.env.MQTTPORT,
+    username:  process.env.MQTTUSER,
+    password: process.env.MQTTPASS,
     keepalive: 60
   };
 
