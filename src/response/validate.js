@@ -1,10 +1,11 @@
-import {
-  verify
-} from "../token/accessToken";
+import { verify } from "../token/accessToken";
 
 export const get = async (req, res) => {
   try {
+
     await verify(req.headers["x-access-token"]);
+    console.log(res)
+
     res.statusCode = 200;
     res.json({
       message: "Good to go!"

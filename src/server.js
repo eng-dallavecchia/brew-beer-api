@@ -5,7 +5,7 @@ import { flowByFaucetReport } from "./response/faucet";
 import { mqttResponse } from "./mqtt";
 import loginResponse from "./response/login";
 import validateResponse from "./response/validate";
-
+import companyBranchResponse from "./response/company_branch";
 
 const withAPIResponse = cb => async (req, res) => {
   const response = await cb(req);
@@ -39,15 +39,15 @@ app.all("/*", function(req, res, next) {
 app.all("/brew/*", async (req, res, next) => {
   try {
     // if (env.NODE_ENV === "development") {
-      if (req.headers["x-access-token"]) {
-        const user = await verify(req.headers["x-access-token"]);
-        req.headers.user = user;
-      }
-      next();
-    // } else {
+    if (req.headers["x-access-token"]) {
       const user = await verify(req.headers["x-access-token"]);
       req.headers.user = user;
-      next();
+    }
+    next();
+    // } else {
+    const user = await verify(req.headers["x-access-token"]);
+    req.headers.user = user;
+    next();
     // }
   } catch (err) {
     res.statusCode = 401;
@@ -59,9 +59,10 @@ app.all("/brew/*", async (req, res, next) => {
 
 mqttResponse();
 
+app.get("/company-branch", companyBranchResponse.get);
+
 app.post("/auth", loginResponse.get);
 app.get("/validate", validateResponse.get);
-
 
 app.get("/flowbyfaucet/:request_sensor", withAPIResponse(flowByFaucetReport));
 
