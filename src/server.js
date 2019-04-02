@@ -3,6 +3,9 @@ import express from "express";
 import bodyParser from "body-parser";
 import { flowByFaucetReport } from "./response/faucet";
 import { mqttResponse } from "./mqtt";
+import loginResponse from "./response/login";
+import validateResponse from "./response/validate";
+
 
 const withAPIResponse = cb => async (req, res) => {
   const response = await cb(req);
@@ -33,7 +36,32 @@ app.all("/*", function(req, res, next) {
   }
 });
 
-mqttResponse()
+app.all("/brew/*", async (req, res, next) => {
+  try {
+    // if (env.NODE_ENV === "development") {
+      if (req.headers["x-access-token"]) {
+        const user = await verify(req.headers["x-access-token"]);
+        req.headers.user = user;
+      }
+      next();
+    // } else {
+      const user = await verify(req.headers["x-access-token"]);
+      req.headers.user = user;
+      next();
+    // }
+  } catch (err) {
+    res.statusCode = 401;
+    res.json({
+      message: "Token inválido"
+    });
+  }
+});
+
+mqttResponse();
+
+app.post("/auth", loginResponse.get);
+app.get("/validate", validateResponse.get);
+
 
 app.get("/flowbyfaucet/:request_sensor", withAPIResponse(flowByFaucetReport));
 
