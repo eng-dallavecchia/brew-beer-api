@@ -1,6 +1,7 @@
 import {} from "dotenv/config";
 import mqtt from "mqtt"; //https://www.npmjs.com/package/mqtt
 import { insert } from "./../db/dbUtil";
+import { findOne } from "./../db/dbUtil";
 
 export const mqttResponse = () => {
   let Topic = process.env.MQTT_TOPIC; //subscribe to all topics
@@ -78,10 +79,13 @@ export const mqttResponse = () => {
 
       let readings = message_str.split(" : ");
 
+      let req_faucet = await findOne("faucet",{sensor: topic_sensor, activity: 1});
+
       await insert("flow", {
         flow: readings[0] * 60,
         sensor_code: topic_sensor,
-        dt_h: readings[1] / (1000 * 3600)
+        dt_h: readings[1] / (1000 * 3600),
+        faucet_id: req_faucet.id
       });
 
       countInstances(message_str);

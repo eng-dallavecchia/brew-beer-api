@@ -2,6 +2,7 @@ import {} from "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import { flowByFaucetReport } from "./response/faucet";
+import { totalBranchRevenues } from "./response/branch";
 import { mqttResponse } from "./mqtt";
 
 const withAPIResponse = cb => async (req, res) => {
@@ -36,6 +37,7 @@ app.all("/*", function(req, res, next) {
 mqttResponse()
 
 app.get("/flowbyfaucet/:request_sensor", withAPIResponse(flowByFaucetReport));
+app.get("/totalbranchrevenues/:request_branch", withAPIResponse(totalBranchRevenues));
 
 // //relatorios por torneira
 // app.get("/flowbyfaucet/:request_sensor", function (req, res){

@@ -37,3 +37,12 @@ export const getCurrentDateTimeSQL = () => {
   moment().locale("pt-br");
   return moment().format("YYYY-MM-DD HH:mm:ss");
 };
+
+
+export const findOne = async (table, where) => {
+  const rows = await db(table)
+    .select()
+    .where({ ...where, date_delete: null })
+    .first();
+  return rows;
+};
