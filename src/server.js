@@ -2,11 +2,21 @@ import {} from "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import { flowByFaucetReport } from "./response/faucet";
+import { faucetReport } from "./response/faucet";
 import { totalBranchRevenues } from "./response/branch";
+import { revenuesByProduct } from "./response/product";
+import { revenuesByProductType } from "./response/product";
+import { branchFaucets } from "./response/branch";
+import { branchProducts } from "./response/branch";
+import { branchProductTypes } from "./response/branch";
+
+
 import { mqttResponse } from "./mqtt";
 import loginResponse from "./response/login";
 import validateResponse from "./response/validate";
 import companyBranchResponse from "./response/company_branch";
+
+
 
 const withAPIResponse = cb => async (req, res) => {
   const response = await cb(req);
@@ -65,8 +75,29 @@ app.get("/company-branch", companyBranchResponse.get);
 app.post("/auth", loginResponse.get);
 app.get("/validate", validateResponse.get);
 
-app.get("/flowbyfaucet/:request_sensor", withAPIResponse(flowByFaucetReport));
+//app.get("/flowbyfaucet/:request_sensor", withAPIResponse(flowByFaucetReport));
+
+//total de faturamento e litros vendidos na franquia:
 app.get("/totalbranchrevenues/:request_branch", withAPIResponse(totalBranchRevenues));
+
+//mostra as torneiras ativas na franquia:
+app.get("/branchfaucets/:request_branch", withAPIResponse(branchFaucets));
+
+//mostra os produtos vendidos na franquia:
+app.get("/branchproducts/:request_branch", withAPIResponse(branchProducts));
+
+//mostra os tipos de produtos vendidos na franquia:
+app.get("/branchproducttypes/:request_branch", withAPIResponse(branchProductTypes));
+
+//faturamento e outros dados por torneira:
+app.get("/faucetreport/:request_branch/:request_faucet", withAPIResponse(faucetReport));
+
+//faturamento e outros dados por produto:
+app.get("/revenuesbyproduct/:request_branch/:request_product", withAPIResponse(revenuesByProduct));
+
+//faturamento e outros dados por tipo de produto:
+app.get("/revenuesbyproducttype/:request_branch/:request_product_type", withAPIResponse(revenuesByProductType));
+
 
 // //relatorios por torneira
 // app.get("/flowbyfaucet/:request_sensor", function (req, res){
