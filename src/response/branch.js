@@ -12,7 +12,7 @@ export const branchRevenuesThisMonth = async (req, res) => {
     let revenues = [0];
     let answer = [];
 
-    for(let i = 0; i < data.length-1 ;i++){
+    for(let i = 0; i < data.length ;i++){
 
   let dt = parseFloat(data[i].dt_h);
   let avgflow = parseFloat(data[i].flow)
@@ -28,7 +28,6 @@ export const branchRevenuesThisMonth = async (req, res) => {
   answer.push(element);
 
   }
-
     return {
       statusCode: 200,
       data: {answer},
@@ -57,7 +56,7 @@ export const branchRevenuesThisDay = async (req, res) => {
     let revenues = [0];
     let answer = [];
 
-    for(let i = 0; i < data.length-1 ;i++){
+    for(let i = 0; i < data.length ;i++){
 
   let dt = parseFloat(data[i].dt_h);
   let avgflow = parseFloat(data[i].flow)
@@ -73,7 +72,6 @@ export const branchRevenuesThisDay = async (req, res) => {
   answer.push(element);
 
   }
-
     return {
       statusCode: 200,
       data: {answer},
@@ -93,17 +91,12 @@ export const branchRevenuesThisDay = async (req, res) => {
 
 
 
-
-
 export const branchFaucets = async (req, res) => {
   try {
     const { request_branch } = req.params;
     let data = await rawNex(
       `SELECT faucet.id as id, sensor, faucet_name, product_id, product.name as product_name from faucet join product ON (product.id =faucet.product_id) WHERE activity = 1 AND faucet.branch_id = ${request_branch}`
     );
-
-    data = JSON.stringify(data);
-    data = JSON.parse(data);
 
 let answer = [];
 
@@ -143,9 +136,6 @@ export const branchProducts = async (req, res) => {
       `SELECT DISTINCT product.id as p_id, product.name as p_name, price as p_price, product_type_id as p_type FROM product join faucet ON (product.id = faucet.product_id) WHERE faucet.branch_id = ${request_branch}`
     );
 
-    data = JSON.stringify(data);
-    data = JSON.parse(data);
-
 let answer = [];
 
     for(let i = 0; i < data.length ;i++){
@@ -181,9 +171,6 @@ export const branchProductTypes = async (req, res) => {
     let data = await rawNex(
       `SELECT DISTINCT product_type.id as pt_id, product_type.name as pt_name FROM product join faucet ON (product.id = faucet.product_id) join product_type ON (product_type_id = product_type.id) WHERE faucet.branch_id = ${request_branch}`
     );
-
-    data = JSON.stringify(data);
-    data = JSON.parse(data);
 
 let answer = [];
 
