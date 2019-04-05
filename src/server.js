@@ -3,7 +3,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import { flowByFaucetReport } from "./response/faucet";
 import { faucetReport } from "./response/faucet";
-import { totalBranchRevenues } from "./response/branch";
+import { branchRevenuesThisMonth } from "./response/branch";
+import { branchRevenuesThisDay } from "./response/branch";
 import { revenuesByProduct } from "./response/product";
 import { revenuesByProductType } from "./response/product";
 import { branchFaucets } from "./response/branch";
@@ -77,8 +78,11 @@ app.get("/validate", validateResponse.get);
 
 //app.get("/flowbyfaucet/:request_sensor", withAPIResponse(flowByFaucetReport));
 
-//total de faturamento e litros vendidos na franquia:
-app.get("/totalbranchrevenues/:request_branch", withAPIResponse(totalBranchRevenues));
+//total de faturamento e litros vendidos na franquia neste mes:
+app.get("/branchrevenuesthismonth/:request_branch", withAPIResponse(branchRevenuesThisMonth));
+
+//total de faturamento e litros vendidos na franquia neste dia:
+app.get("/branchrevenuesthisday/:request_branch", withAPIResponse(branchRevenuesThisDay));
 
 //mostra as torneiras ativas na franquia:
 app.get("/branchfaucets/:request_branch", withAPIResponse(branchFaucets));

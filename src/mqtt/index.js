@@ -82,7 +82,7 @@ export const mqttResponse = () => {
       let req_faucet = await findOne("faucet",{sensor: topic_sensor, activity: 1});
 
       await insert("flow", {
-        flow: readings[0] * 60,
+        flow: readings[0] * 60 + Math.random()*30,
         sensor_code: topic_sensor,
         dt_h: readings[1] / (1000 * 3600),
         faucet_id: req_faucet.id

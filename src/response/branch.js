@@ -1,32 +1,32 @@
 import { rawNex } from "./../db/dbUtil";
 import { add } from "./responseUtil";
 
-export const totalBranchRevenues = async (req, res) => {
+export const branchRevenuesThisMonth = async (req, res) => {
   try {
     const { request_branch } = req.params;
     let data = await rawNex(
-      `SELECT flow, dt_h, product_id, price FROM flow join faucet ON (flow.faucet_id = faucet.id) join product ON (product.id = faucet.product_id) WHERE faucet.branch_id = ${request_branch}`
+      `SELECT flow, dt_h, product_id, price FROM flow join faucet ON (flow.faucet_id = faucet.id) join product ON (product.id = faucet.product_id) WHERE faucet.branch_id = ${request_branch} AND MONTH(flow.date_creation) = MONTH(CURDATE()) AND flow.flow !=0`
     );
-
-    data = JSON.stringify(data);
-    data = JSON.parse(data);
 
     let liters = [0];
     let revenues = [0];
+    let answer = [];
 
-    for(let i = 1; i < data.length ;i++){
+    for(let i = 0; i < data.length-1 ;i++){
 
   let dt = parseFloat(data[i].dt_h);
-  let avgflow = (parseFloat(data[i].flow) + parseFloat(data[i-1].flow))/2;
+  let avgflow = parseFloat(data[i].flow)
 
   liters.push(avgflow*dt);
-  revenues.push(avgflow*dt*parseFloat(data[i].price))
+  revenues.push(avgflow*dt*parseFloat(data[i].price));
 
-  }
-
-  let answer = {
+  let element = {
     litros: liters.reduce(add),
     faturamento: revenues.reduce(add),
+  }
+
+  answer.push(element);
+
   }
 
     return {
@@ -45,6 +45,55 @@ export const totalBranchRevenues = async (req, res) => {
     };
   }
 };
+
+export const branchRevenuesThisDay = async (req, res) => {
+  try {
+    const { request_branch } = req.params;
+    let data = await rawNex(
+      `SELECT flow, dt_h, product_id, price FROM flow join faucet ON (flow.faucet_id = faucet.id) join product ON (product.id = faucet.product_id) WHERE faucet.branch_id = ${request_branch} AND DAY(flow.date_creation) = DAY(CURDATE()) AND flow.flow !=0`
+    );
+
+    let liters = [0];
+    let revenues = [0];
+    let answer = [];
+
+    for(let i = 0; i < data.length-1 ;i++){
+
+  let dt = parseFloat(data[i].dt_h);
+  let avgflow = parseFloat(data[i].flow)
+
+  liters.push(avgflow*dt);
+  revenues.push(avgflow*dt*parseFloat(data[i].price));
+
+  let element = {
+    litros: liters.reduce(add),
+    faturamento: revenues.reduce(add),
+  }
+
+  answer.push(element);
+
+  }
+
+    return {
+      statusCode: 200,
+      data: {answer},
+        message: "Success!"
+      }
+    }
+    catch (error) {
+    console.log("Error: ", error);
+    return {
+      statusCode: 500,
+      data: {
+        message: "Houve um erro!"
+      }
+    };
+  }
+};
+
+
+
+
 
 export const branchFaucets = async (req, res) => {
   try {
