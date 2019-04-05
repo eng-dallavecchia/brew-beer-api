@@ -15,7 +15,7 @@ export const branchRevenuesThisMonth = async (req, res) => {
     for(let i = 0; i < data.length ;i++){
 
   let dt = parseFloat(data[i].dt_h);
-  let avgflow = parseFloat(data[i].flow)
+  let avgflow = parseFloat(data[i].flow);
 
   liters.push(avgflow*dt);
   revenues.push(avgflow*dt*parseFloat(data[i].price));
@@ -59,7 +59,7 @@ export const branchRevenuesThisDay = async (req, res) => {
     for(let i = 0; i < data.length ;i++){
 
   let dt = parseFloat(data[i].dt_h);
-  let avgflow = parseFloat(data[i].flow)
+  let avgflow = parseFloat(data[i].flow);
 
   liters.push(avgflow*dt);
   revenues.push(avgflow*dt*parseFloat(data[i].price));

@@ -36,21 +36,18 @@ export const faucetReport = async (req, res) => {
       `SELECT faucet.id, sensor, faucet_name, flow, dt_h, flow.date_creation as date_flow, product_id, price FROM faucet join flow ON (faucet.sensor = flow.sensor_code) join product ON (product.id = product_id) WHERE activity = 1 AND faucet.id = ${request_faucet} AND faucet.branch_id = ${request_branch}`
     );
 
-    data = JSON.stringify(data);
-    data = JSON.parse(data);
-
     let liters = [0];
     let revenues = [0];
     let answer = [];
 
 
-    for(let i = 1; i < data.length ;i++){
+    for(let i = 0; i < data.length ;i++){
 
   let dt = parseFloat(data[i].dt_h);
-  let avgflow = (parseFloat(data[i].flow) + parseFloat(data[i-1].flow))/2;
+  let avgflow = parseFloat(data[i].flow);
 
   liters.push(avgflow*dt);
-  revenues.push(avgflow*dt*parseFloat(data[i].price))
+  revenues.push(avgflow*dt*parseFloat(data[i].price));
 
   let element = {
     id: data[i].id,
