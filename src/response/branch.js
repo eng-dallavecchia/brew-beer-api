@@ -5,7 +5,7 @@ export const branchRevenuesThisMonth = async (req, res) => {
   try {
     const { request_branch } = req.params;
     let data = await rawNex(
-      `SELECT flow, dt_h, product_id, price FROM flow join faucet ON (flow.faucet_id = faucet.id) join product ON (product.id = faucet.product_id) WHERE faucet.branch_id = ${request_branch} AND MONTH(flow.date_creation) = MONTH(CURDATE()) AND flow.flow !=0`
+      `SELECT flow, dt_h, product_id, price, flow.date_creation as f_date FROM flow join faucet ON (flow.faucet_id = faucet.id) join product ON (product.id = faucet.product_id) WHERE faucet.branch_id = ${request_branch} AND MONTH(flow.date_creation) = MONTH(CURDATE()) AND flow.flow !=0`
     );
 
     let liters = [0];
@@ -23,6 +23,7 @@ export const branchRevenuesThisMonth = async (req, res) => {
   let element = {
     litros: liters.reduce(add),
     faturamento: revenues.reduce(add),
+    creation: data[i].f_date
   }
 
   answer.push(element);
