@@ -1,50 +1,30 @@
 import { rawNex } from "./../db/dbUtil";
 import { add } from "./responseUtil";
 import moment from "moment";
+import { tic, toc } from 'tic-toc';
 
 export const branchRevenuesThisMonth = async (req, res) => {
+
   try {
     const { request_branch } = req.params;
     let data = await rawNex(
-      `
-          SELECT flow, 
-            dt_h, 
-            product_id, 
-            price, 
-            flow.date_creation AS f_date
-      FROM   flow 
-            JOIN faucet 
-              ON ( flow.faucet_id = faucet.id ) 
-            JOIN product 
-              ON ( product.id = faucet.product_id ) 
-      WHERE  faucet.branch_id = ${request_branch}
-            AND Month(flow.date_creation) = Month( 
-                Convert_tz(Now(), "+00:00", "-03:00")) 
-            AND flow.flow != 0 `
+      `SELECT
+        FORMAT(SUM(flow*dt_h),2) litros,
+        FORMAT(SUM(flow*dt_h*price),2) faturamento,
+          MONTH(flow.date_creation) as mês
+    FROM   flow
+          JOIN faucet
+            ON ( flow.faucet_id = faucet.id )
+          JOIN product
+            ON ( product.id = faucet.product_id )
+    WHERE  faucet.branch_id = ${request_branch}
+          AND MONTH(flow.date_creation) = MONTH(Convert_tz(Now(), "+00:00", "-03:00"))
+          AND flow.flow != 0`
     );
 
-    let liters = [0];
-    let revenues = [0];
-    let answer = [];
-
-    for (let i = 0; i < data.length; i++) {
-      let dt = parseFloat(data[i].dt_h);
-      let avgflow = parseFloat(data[i].flow);
-
-      liters.push(avgflow * dt);
-      revenues.push(avgflow * dt * parseFloat(data[i].price));
-
-      let element = {
-        litros: liters.reduce(add),
-        faturamento: revenues.reduce(add),
-        creation: moment(data[i].f_date).format()
-      };
-
-      answer.push(element);
-    }
     return {
       statusCode: 200,
-      data: { answer },
+      data: { data },
       message: "Success!"
     };
   } catch (error) {
@@ -62,42 +42,59 @@ export const branchRevenuesThisDay = async (req, res) => {
   try {
     const { request_branch } = req.params;
     let data = await rawNex(
-      `SELECT flow, 
-          dt_h, 
-          product_id, 
-          price, 
-          flow.date_creation 
-    FROM   flow 
-          JOIN faucet 
-            ON ( flow.faucet_id = faucet.id ) 
-          JOIN product 
-            ON ( product.id = faucet.product_id ) 
+      `SELECT
+        FORMAT(SUM(flow*dt_h),2) litros,
+        FORMAT(SUM(flow*dt_h*price),2) faturamento,
+        DAY(flow.date_creation) as dia
+    FROM   flow
+          JOIN faucet
+            ON ( flow.faucet_id = faucet.id )
+          JOIN product
+            ON ( product.id = faucet.product_id )
     WHERE  faucet.branch_id = ${request_branch}
-          AND Day(flow.date_creation) = Day(Convert_tz(Now(), "+00:00", "-03:00")) 
-          AND flow.flow != 0 `
+          AND Day(flow.date_creation) = Day(Convert_tz(Now(), "+00:00", "-03:00"))
+          AND flow.flow != 0`
     );
 
-    let liters = [0];
-    let revenues = [0];
-    let answer = [];
-
-    for (let i = 0; i < data.length; i++) {
-      let dt = parseFloat(data[i].dt_h);
-      let avgflow = parseFloat(data[i].flow);
-
-      liters.push(avgflow * dt);
-      revenues.push(avgflow * dt * parseFloat(data[i].price));
-
-      let element = {
-        litros: liters.reduce(add),
-        faturamento: revenues.reduce(add)
-      };
-
-      answer.push(element);
-    }
     return {
       statusCode: 200,
-      data: { answer },
+      data: { data },
+      message: "Success!"
+    };
+  } catch (error) {
+    console.log("Error: ", error);
+    return {
+      statusCode: 500,
+      data: {
+        message: "Houve um erro!"
+      }
+    };
+  }
+};
+
+export const graphMonth = async (req, res) => {
+  try {
+    const { request_branch } = req.params;
+    let data = await rawNex(
+      `SELECT
+	     DAY(flow.date_creation) dia,
+        FORMAT(SUM(flow*dt_h),2) litros,
+        FORMAT(SUM(flow*dt_h*price),2) faturamento
+    FROM   flow
+          JOIN faucet
+            ON ( flow.faucet_id = faucet.id )
+          JOIN product
+            ON ( product.id = faucet.product_id )
+    WHERE  faucet.branch_id = ${request_branch}
+          AND month(flow.date_creation) = month(Convert_tz(Now(), "+00:00", "-03:00"))
+          AND flow.flow != 0
+
+          GROUP BY (DAY(flow.date_creation))`
+    );
+
+    return {
+      statusCode: 200,
+      data: { data },
       message: "Success!"
     };
   } catch (error) {

@@ -5,6 +5,7 @@ import { flowByFaucetReport } from "./response/faucet";
 import { faucetReport } from "./response/faucet";
 import { branchRevenuesThisMonth } from "./response/branch";
 import { branchRevenuesThisDay } from "./response/branch";
+import { graphMonth } from "./response/branch";
 import { revenuesByProduct } from "./response/product";
 import { revenuesByProductType } from "./response/product";
 import { branchFaucets } from "./response/branch";
@@ -72,7 +73,6 @@ app.all("/brew/*", async (req, res, next) => {
 mqttResponse();
 
 app.get("/company-branch", companyBranchResponse.get);
-
 app.post("/auth", loginResponse.get);
 app.get("/validate", validateResponse.get);
 
@@ -97,10 +97,13 @@ app.get("/branchproducttypes/:request_branch", withAPIResponse(branchProductType
 app.get("/faucetreport/:request_branch/:request_faucet", withAPIResponse(faucetReport));
 
 //faturamento e outros dados por produto:
-app.get("/revenuesbyproduct/:request_branch/:request_product", withAPIResponse(revenuesByProduct));
+app.get("/revenuesbyproduct/:request_branch", withAPIResponse(revenuesByProduct));
 
 //faturamento e outros dados por tipo de produto:
-app.get("/revenuesbyproducttype/:request_branch/:request_product_type", withAPIResponse(revenuesByProductType));
+app.get("/revenuesbyproducttype/:request_branch", withAPIResponse(revenuesByProductType));
+
+//gera grafico das vendas no mes
+app.get("/graphmonth/:request_branch", withAPIResponse(graphMonth));
 
 
 // //relatorios por torneira
