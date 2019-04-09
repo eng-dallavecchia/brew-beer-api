@@ -3,6 +3,19 @@ import mqtt from "mqtt"; //https://www.npmjs.com/package/mqtt
 import { insert } from "./../db/dbUtil";
 import { findOne } from "./../db/dbUtil";
 
+export const mqttClient = Broker_URL => {
+  let options = {
+    clientId: process.env.CLIENTID,
+    port: process.env.MQTTPORT,
+    username: process.env.MQTTUSER,
+    password: process.env.MQTTPASS,
+    keepalive: 60
+  };
+  let client = mqtt.connect(Broker_URL, options);
+
+  return client;
+};
+
 export const mqttResponse = () => {
   let Topic = process.env.MQTT_TOPIC; //subscribe to all topics
   let Broker_URL = process.env.MQTT_BROKER;
@@ -17,12 +30,13 @@ export const mqttResponse = () => {
   let options = {
     clientId: process.env.CLIENTID,
     port: process.env.MQTTPORT,
-    username:  process.env.MQTTUSER,
+    username: process.env.MQTTUSER,
     password: process.env.MQTTPASS,
     keepalive: 60
   };
 
-  let client = mqtt.connect(Broker_URL, options);
+  let client = mqttClient(Broker_URL);
+
   client.on("connect", mqtt_connect);
   client.on("reconnect", mqtt_reconnect);
   client.on("error", mqtt_error);
@@ -79,10 +93,13 @@ export const mqttResponse = () => {
 
       let readings = message_str.split(" : ");
 
-      let req_faucet = await findOne("faucet",{sensor: topic_sensor, activity: 1});
-// + Math.random()*30
+      let req_faucet = await findOne("faucet", {
+        sensor: topic_sensor,
+        activity: 1
+      });
+      // + Math.random()*30
       await insert("flow", {
-        flow: readings[0] * 60  + Math.random()*30,
+        flow: readings[0] * 60 + Math.random() * 30,
         sensor_code: topic_sensor,
         dt_h: readings[1] / (1000 * 3600),
         faucet_id: req_faucet.id

@@ -38,11 +38,17 @@ export const getCurrentDateTimeSQL = () => {
   return moment().format("YYYY-MM-DD HH:mm:ss");
 };
 
-
 export const findOne = async (table, where) => {
   const rows = await db(table)
     .select()
     .where({ ...where, date_delete: null })
     .first();
   return rows;
+};
+
+export const rawOne = async (query, params) => {
+  const data = await rawNex(query, params);
+  if (Array.isArray(data) && data.length > 0) {
+    return data[0];
+  }
 };

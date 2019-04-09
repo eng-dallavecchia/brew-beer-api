@@ -1,12 +1,10 @@
-import { rawNex } from "./../db/dbUtil";
-import { add } from "./responseUtil";
-import moment from "moment";
+import { rawNex, rawOne } from "./../db/dbUtil";
 
 export const branchRevenuesThisMonth = async (req, res) => {
 
   try {
     const { request_branch } = req.params;
-    let data = await rawNex(
+    let data = await rawOne(
       `SELECT
         FORMAT(SUM(flow*dt_h),2) litros,
         FORMAT(SUM(flow*dt_h*price),2) faturamento,
@@ -40,7 +38,7 @@ export const branchRevenuesThisMonth = async (req, res) => {
 export const branchRevenuesThisDay = async (req, res) => {
   try {
     const { request_branch } = req.params;
-    let data = await rawNex(
+    let data = await rawOne(
       `SELECT
         FORMAT(SUM(flow*dt_h),2) litros,
         FORMAT(SUM(flow*dt_h*price),2) faturamento,
