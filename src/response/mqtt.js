@@ -1,12 +1,13 @@
 import { mqttClient } from "./../mqtt";
 
 export const factorCalibration = async (req, res) => {
-  let client = await mqttClient(process.env.MQTT_BROKER);
+  const { calibrationNumber, sensorId } = req.body;
+  
+  const client = await mqttClient(process.env.MQTT_BROKER);
 
-  const { calibrationNumber, sensorId } = req.params;
-  let topic = process.env.MQTTUSER + "/calibration/" + sensorId;
+  const topic = process.env.MQTTUSER + "/calibration/" + sensorId;
 
-  client.publish(topic, calibrationNumber, err => {
+  client.publish(topic, calibrationNumber, 1, err => {
     if (err) {
       res.json({ message: err });
     }

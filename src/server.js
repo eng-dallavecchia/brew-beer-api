@@ -69,7 +69,7 @@ app.all("/brew/*", async (req, res, next) => {
 
 mqttResponse();
 
-app.post("/calibration/:calibrationNumber/:sensorId", factorCalibration);
+app.post("/calibration", factorCalibration);
 
 app.get("/company-branch", companyBranchResponse.get);
 app.post("/auth", loginResponse.get);
