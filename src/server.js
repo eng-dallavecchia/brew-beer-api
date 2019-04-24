@@ -5,6 +5,7 @@ import { flowByFaucetReport } from "./response/faucet";
 import { faucetReport } from "./response/faucet";
 import { branchRevenuesThisMonth } from "./response/branch";
 import { branchRevenuesThisDay } from "./response/branch";
+import { barrelControl } from "./response/branch";
 import { graphMonth } from "./response/branch";
 import { revenuesByProduct } from "./response/product";
 import { revenuesByProductType } from "./response/product";
@@ -16,6 +17,7 @@ import { mqttResponse } from "./mqtt";
 import loginResponse from "./response/login";
 import validateResponse from "./response/validate";
 import companyBranchResponse from "./response/company_branch";
+import {sensorCalibration} from "./mqtt/index";
 
 const withAPIResponse = cb => async (req, res) => {
   const response = await cb(req);
@@ -70,7 +72,6 @@ app.all("/brew/*", async (req, res, next) => {
 mqttResponse();
 
 app.post("/calibration", factorCalibration);
-
 app.get("/company-branch", companyBranchResponse.get);
 app.post("/auth", loginResponse.get);
 app.get("/validate", validateResponse.get);
@@ -121,6 +122,13 @@ app.get(
 
 //gera grafico das vendas no mes
 app.get("/graphmonth/:request_branch", withAPIResponse(graphMonth));
+
+//controle dos barris
+
+app.get(
+  "/barrelcontrol/:request_branch",
+  withAPIResponse(barrelControl)
+);
 
 // //relatorios por torneira
 // app.get("/flowbyfaucet/:request_sensor", function (req, res){

@@ -206,3 +206,36 @@ export const branchProductTypes = async (req, res) => {
     };
   }
 };
+
+export const barrelControl = async (req, res) => {
+
+  try {
+    const { request_branch } = req.params;
+    let data = await rawNex(
+      `SELECT
+        faucet.id,
+        faucet.sensor,
+        FORMAT(SUM(flow*dt_h)%faucet.capacity,2) litros
+    FROM   flow
+          JOIN faucet
+            ON ( flow.faucet_id = faucet.id )
+    WHERE  faucet.branch_id = ${request_branch}
+          AND faucet.activity = 1
+    GROUP BY (faucet.id)`
+    );
+
+    return {
+      statusCode: 200,
+      data: { data },
+      message: "Success!"
+    };
+  } catch (error) {
+    console.log("Error: ", error);
+    return {
+      statusCode: 500,
+      data: {
+        message: "Houve um erro!"
+      }
+    };
+  }
+};

@@ -46,7 +46,7 @@ export const mqttResponse = () => {
   function mqtt_connect() {
     //console.log("Connecting MQTT");
     client.subscribe(Topic, mqtt_subscribe);
-    
+
   }
 
   function mqtt_subscribe(err, granted) {
@@ -112,5 +112,7 @@ export const mqttResponse = () => {
     }
   }
 };
+
+
 
 export default mqttResponse;
