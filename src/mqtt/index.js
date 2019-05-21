@@ -46,7 +46,6 @@ export const mqttResponse = () => {
   function mqtt_connect() {
     //console.log("Connecting MQTT");
     client.subscribe(Topic, mqtt_subscribe);
-
   }
 
   function mqtt_subscribe(err, granted) {
@@ -100,7 +99,7 @@ export const mqttResponse = () => {
       });
       // + Math.random()*30
       await insert("flow", {
-        flow: readings[0] * 60 + Math.random() * 30,
+        flow: readings[0] * 60,
         sensor_code: topic_sensor,
         dt_h: readings[1] / (1000 * 3600),
         faucet_id: req_faucet.id
@@ -112,7 +111,5 @@ export const mqttResponse = () => {
     }
   }
 };
-
-
 
 export default mqttResponse;
