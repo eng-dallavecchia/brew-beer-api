@@ -217,12 +217,13 @@ export const barrelControl = async (req, res) => {
       `SELECT
         faucet.id,
         faucet.sensor,
-        FORMAT(SUM(flow*dt_h)%faucet.capacity,2) litros
+        FORMAT(faucet.capacity - SUM(flow*dt_h)%faucet.capacity,2) litros
     FROM   flow
           JOIN faucet
             ON ( flow.faucet_id = faucet.id )
     WHERE  faucet.branch_id = ${request_branch}
           AND faucet.activity = 1
+          AND flow.date_creation > faucet.date_update
     GROUP BY (faucet.id)`
     );
 
