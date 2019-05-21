@@ -2,7 +2,8 @@ import {} from "dotenv/config";
 import express from "express";
 import bodyParser from "body-parser";
 import { flowByFaucetReport } from "./response/faucet";
-import { faucetReport } from "./response/faucet";
+import { faucetReport, update_faucet_date } from "./response/faucet";
+
 import { branchRevenuesThisMonth } from "./response/branch";
 import { branchRevenuesThisDay } from "./response/branch";
 import { barrelControl } from "./response/branch";
@@ -17,7 +18,7 @@ import { mqttResponse } from "./mqtt";
 import loginResponse from "./response/login";
 import validateResponse from "./response/validate";
 import companyBranchResponse from "./response/company_branch";
-import {sensorCalibration} from "./mqtt/index";
+import { sensorCalibration } from "./mqtt/index";
 
 const withAPIResponse = cb => async (req, res) => {
   const response = await cb(req);
@@ -93,6 +94,8 @@ app.get(
 //mostra as torneiras ativas na franquia:
 app.get("/branchfaucets/:request_branch", withAPIResponse(branchFaucets));
 
+app.put("/update-faucet/:id", withAPIResponse(update_faucet_date));
+
 //mostra os produtos vendidos na franquia:
 app.get("/branchproducts/:request_branch", withAPIResponse(branchProducts));
 
@@ -125,10 +128,7 @@ app.get("/graphmonth/:request_branch", withAPIResponse(graphMonth));
 
 //controle dos barris
 
-app.get(
-  "/barrelcontrol/:request_branch",
-  withAPIResponse(barrelControl)
-);
+app.get("/barrelcontrol/:request_branch", withAPIResponse(barrelControl));
 
 // //relatorios por torneira
 // app.get("/flowbyfaucet/:request_sensor", function (req, res){

@@ -52,3 +52,11 @@ export const rawOne = async (query, params) => {
     return data[0];
   }
 };
+
+export const update = async (table, data, where) => {
+  const d = data ? data : {};
+  const res = await db(table)
+    .where(where)
+    .update({ ...d, date_update: getCurrentDateTimeSQL() });
+  return res[0];
+};

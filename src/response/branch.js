@@ -53,6 +53,8 @@ export const branchRevenuesThisDay = async (req, res) => {
           AND flow.flow != 0`
     );
 
+    console.log(data)
+
     return {
       statusCode: 200,
       data: { data },
